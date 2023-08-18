@@ -4,4 +4,5 @@ export interface User extends Auth{
     firstName: String,
     lastName: String,
     mobile:String,
+    role:String,
 }

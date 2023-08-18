@@ -41,7 +41,8 @@ const loginUserService = async ({ email, password }: Auth) => {
   const token = generateToken(`${userInDB._id}`)
   
   const data = {
-    token
+    token,
+    userInDB,
   };
 
   return data
