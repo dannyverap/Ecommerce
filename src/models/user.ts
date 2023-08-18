@@ -26,10 +26,26 @@ const UserSchema = new Schema<User>(
       required: true,
       unique: true,
     },
-    role:{
+    role: {
       type: String,
-      default:"user",
-    }
+      default: "user",
+    },
+    cart: {
+      default:[],
+    },
+
+    address: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Address",
+      },
+    ],
+    wishlist: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
   },
   {
     timestamps: true,
