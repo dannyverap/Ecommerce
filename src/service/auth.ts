@@ -13,13 +13,13 @@ const registerNewUserService = async ({
 }: User) => {
   const userInDB = await UserModel.findOne({ email });
 
-  if (userInDB) throw "User already exists";
+  if (userInDB) throw new Error("User already exists");
 
-  const hashedPassword = await encrypt(password)
+  const hashedPassword = await encrypt(password);
 
   const newUser = await UserModel.create({
     email,
-    password:hashedPassword,
+    password: hashedPassword,
     firstName,
     lastName,
     mobile,
@@ -30,22 +30,22 @@ const registerNewUserService = async ({
 const loginUserService = async ({ email, password }: Auth) => {
   const userInDB = await UserModel.findOne({ email });
 
-  if (!userInDB) throw "Wrong user or password";
+  if (!userInDB) throw new Error("Wrong user or password");
 
   const hashedPassword = userInDB.password;
-   
-  const matchedPassword = await verify(password, hashedPassword);
-  
-  if (!matchedPassword) throw "Wrong user or password";
 
-  const token = generateToken(`${userInDB._id}`)
-  
+  const matchedPassword = await verify(password, hashedPassword);
+
+  if (!matchedPassword) throw new Error("Wrong user or password");
+
+  const token = generateToken(`${userInDB._id}`);
+
   const data = {
     token,
     userInDB,
   };
 
-  return data
+  return data;
 };
 
-export { registerNewUserService , loginUserService};
+export { registerNewUserService, loginUserService };

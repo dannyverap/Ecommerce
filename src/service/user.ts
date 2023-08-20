@@ -9,7 +9,7 @@ const getAllUsersService = async () => {
 const getUserByIdService = async (id: string) => {
   const user = await UserModel.findOne({ _id: id });
   if (!user) {
-    throw "user not found";
+    throw  new Error ("user not found");
   }
   return user;
 };
@@ -19,7 +19,7 @@ const updateUserService = async (id: string, data: User) => {
     new: true,
   });
   if (!userToUpdate) {
-    throw "user not found";
+    throw  new Error ("user not found");
   }
   return userToUpdate;
 };
@@ -27,7 +27,7 @@ const updateUserService = async (id: string, data: User) => {
 const deleteUserService = async (id: string) => {
   const user = await UserModel.findOneAndDelete({ _id: id });
   if (!user) {
-    throw "user not found";
+    throw  new Error ("user not found");
   }
   return `${user?.firstName} Deleted :C`;
 };
