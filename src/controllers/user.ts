@@ -46,13 +46,6 @@ const deleteUser = async ({ params }: Request, res: Response) => {
     handleHttP(res, `${error}`);
   }
 };
-const getMe = async (req: RequestExt, res: Response) => {
-  try {
-    const a = req.payload;
-    res.send(a);
-  } catch (error) {
-    handleHttP(res, `${error}`);
-  }
-};
 
-export { getAllUsers, getUserById, updateUser, deleteUser, getMe };
+
+export { getAllUsers, getUserById, updateUser, deleteUser};

@@ -1,5 +1,6 @@
 import "dotenv/config";
 import {sign, verify} from "jsonwebtoken"
+import { payload } from "../interfaces/payload.interface";
 
 const JWT_SECRET = process.env.JWT_SECRET  || ""
 
@@ -9,7 +10,7 @@ const generateToken = (id:string) => {
 }
 
 const verifyToken = (jwt:string) => {
-    const validToken = verify(jwt,JWT_SECRET)
+    const validToken = verify(jwt,JWT_SECRET) as payload
     return validToken
 }
 

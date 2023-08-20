@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { verifyToken } from "../utils/jwt.handler";
 import { RequestExt } from "../interfaces/request.interface";
 import { handleHttP } from "../utils/error.handler";
+import { payload } from "../interfaces/payload.interface";
 
 const authMiddleware = (req: RequestExt, res: Response, next: NextFunction) => {
   try {
@@ -20,12 +21,14 @@ const authMiddleware = (req: RequestExt, res: Response, next: NextFunction) => {
     }
 
     const jwt = tokenParts[1]; // Obtener el token JWT real
-    const jwtVerificado = verifyToken(jwt);
+    const jwtVerificado = verifyToken(jwt) as payload;
 
     if (!jwtVerificado) {
       throw new Error("not Authorized");
     } else {
-      req.payload = jwtVerificado;
+      console.log(jwtVerificado);
+      
+      req.payload = jwtVerificado.id;
       next();
     }
   }  catch (error) {
