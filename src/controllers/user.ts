@@ -6,17 +6,18 @@ import {
   updateUserService,
 } from "../service/user";
 import { handleHttP } from "../utils/error.handler";
+import { RequestExt } from "../interfaces/request.interface";
 
-const getAllUsers = async (req: Request, res: Response) => {
+const getAllUsers = async (req: RequestExt, res: Response) => {
   try {
     const allUsers = await getAllUsersService();
-    res.send(allUsers);
+    res.send({ use: req.payload, allUsers });
   } catch (error) {
     handleHttP(res, `${error}`);
   }
 };
 
-const getUserById = async ({ params }: Request, res: Response) => {
+const getUserById = async ({ params }: RequestExt, res: Response) => {
   try {
     const { id } = params;
     const user = await getUserByIdService(id);
@@ -45,5 +46,13 @@ const deleteUser = async ({ params }: Request, res: Response) => {
     handleHttP(res, `${error}`);
   }
 };
+const getMe = async (req: RequestExt, res: Response) => {
+  try {
+    const a = req.payload;
+    res.send(a);
+  } catch (error) {
+    handleHttP(res, `${error}`);
+  }
+};
 
-export { getAllUsers, getUserById, updateUser, deleteUser };
+export { getAllUsers, getUserById, updateUser, deleteUser, getMe };
