@@ -3,6 +3,7 @@ import { User } from "../interfaces/user.interface";
 import { Auth } from "../interfaces/auth.interface";
 import { verify, encrypt } from "../utils/bcrypt.handler";
 import { generateToken } from "../utils/jwt.handler";
+import { isBlock } from "typescript";
 
 const registerNewUserService = async ({
   email,
@@ -48,4 +49,32 @@ const loginUserService = async ({ email, password }: Auth) => {
   return data;
 };
 
-export { registerNewUserService, loginUserService };
+const blockUserService = async (id: string) => {
+  const userToBlock = await UserModel.findOneAndUpdate(
+    { _id: id },
+    { isBlocked: true },
+    { new: true }
+  );
+
+  if (!userToBlock) {
+    throw  new Error ("user not found");
+  }
+
+  return userToBlock
+};
+
+const unblockUserService = async (id: string) => {
+  const userToUnblock = await UserModel.findOneAndUpdate(
+    { _id: id },
+    { isBlocked: false },
+    { new: true }
+  );
+
+  if (!userToUnblock) {
+    throw  new Error ("user not found");
+  }
+
+  return userToUnblock
+};
+
+export { registerNewUserService, loginUserService, blockUserService, unblockUserService };

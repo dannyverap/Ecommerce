@@ -26,7 +26,7 @@ const authMiddleware = (req: RequestExt, res: Response, next: NextFunction) => {
     if (!jwtVerificado) {
       throw new Error("not Authorized");
     } else {
-      console.log(jwtVerificado);
+     
       
       req.payload = jwtVerificado.id;
       next();

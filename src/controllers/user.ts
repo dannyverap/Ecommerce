@@ -7,11 +7,12 @@ import {
 } from "../service/user";
 import { handleHttP } from "../utils/error.handler";
 import { RequestExt } from "../interfaces/request.interface";
+import { validateMongoId } from "../utils/validateMongoId";
 
 const getAllUsers = async (req: RequestExt, res: Response) => {
   try {
     const allUsers = await getAllUsersService();
-    res.send({ use: req.payload, allUsers });
+    res.send(allUsers );
   } catch (error) {
     handleHttP(res, `${error}`);
   }
@@ -20,6 +21,7 @@ const getAllUsers = async (req: RequestExt, res: Response) => {
 const getUserById = async ({ params }: RequestExt, res: Response) => {
   try {
     const { id } = params;
+    validateMongoId(id)
     const user = await getUserByIdService(id);
     res.send(user);
   } catch (error) {
