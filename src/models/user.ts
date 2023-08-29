@@ -36,6 +36,7 @@ const UserSchema = new Schema<User>(
     },
     refreshToken:{
       type: String,
+      index:true,
     },
     cart: {
       default:[],

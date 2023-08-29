@@ -2,8 +2,11 @@ import UserModel from "../models/user";
 import { User } from "../interfaces/user.interface";
 import { Auth } from "../interfaces/auth.interface";
 import { verify, encrypt } from "../utils/bcrypt.handler";
-import { generateRefreshToken, generateToken } from "../utils/jwt.handler";
-import { isBlock } from "typescript";
+import {
+  generateRefreshToken,
+  generateToken,
+  verifyRefreshToken,
+} from "../utils/jwt.handler";
 import { updateUserService } from "./user";
 
 const registerNewUserService = async ({
@@ -41,13 +44,14 @@ const loginUserService = async ({ email, password }: Auth) => {
   if (!matchedPassword) throw new Error("Wrong user or password");
 
   const token = generateToken(`${userInDB._id}`);
-  const refreshToken = generateRefreshToken(`${userInDB._id}`)
-  const updateRefreshTokenInUser = updateUserService(`${userInDB._id}`, {refreshToken:`${refreshToken}`}) 
+  const refreshToken = await generateRefreshToken(`${userInDB._id}`);
+  const updatedUser = await updateUserService(`${userInDB._id}`, {
+    refreshToken: `${refreshToken}`,
+  });
 
   const data = {
     token,
-    refreshToken,
-    userInDB,
+    user:updatedUser,
   };
 
   return data;
@@ -61,10 +65,10 @@ const blockUserService = async (id: string) => {
   );
 
   if (!userToBlock) {
-    throw  new Error ("user not found");
+    throw new Error("user not found");
   }
 
-  return userToBlock
+  return userToBlock;
 };
 
 const unblockUserService = async (id: string) => {
@@ -75,10 +79,26 @@ const unblockUserService = async (id: string) => {
   );
 
   if (!userToUnblock) {
-    throw  new Error ("user not found");
+    throw new Error("user not found");
   }
 
-  return userToUnblock
+  return userToUnblock;
 };
 
-export { registerNewUserService, loginUserService, blockUserService, unblockUserService };
+const findUserByRefreshTokenService = async (refreshToken: string) => {
+
+  const userInDB = await UserModel.findOne({refreshToken:refreshToken});
+  if (!userInDB)
+    throw new Error("No refresh token present in db or aaaa matched");
+  return userInDB;
+};
+
+
+
+export {
+  registerNewUserService,
+  loginUserService,
+  blockUserService,
+  unblockUserService,
+  findUserByRefreshTokenService,
+};

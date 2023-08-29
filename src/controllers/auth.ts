@@ -1,13 +1,15 @@
 import { Request, Response, request, response } from "express";
 import {
   blockUserService,
+  findUserByRefreshTokenService,
   loginUserService,
   registerNewUserService,
-  unblockUserService
+  unblockUserService,
 } from "../service/auth";
 import { handleHttP } from "../utils/error.handler";
 import { RequestExt } from "../interfaces/request.interface";
 import { getUserByIdService } from "../service/user";
+import { verifyRefreshToken } from "../utils/jwt.handler";
 
 const registerUser = async ({ body }: Request, res: Response) => {
   try {
@@ -20,8 +22,12 @@ const registerUser = async ({ body }: Request, res: Response) => {
 
 const loginUser = async ({ body }: Request, res: Response) => {
   try {
-    const user = await loginUserService(body);
-    res.send(user);
+    const { token, user } = await loginUserService(body);
+    res.cookie("refreshToken", user.refreshToken, {
+      httpOnly: true,
+      maxAge: 24 * 3 * 60 * 60 * 1000,
+    });
+    res.json({ token,user });
   } catch (error) {
     handleHttP(res, `${error}`);
   }
@@ -31,7 +37,6 @@ const getProfile = async (req: RequestExt, res: Response) => {
   try {
     const userId = req.payload;
     const user = await getUserByIdService(`${userId}`);
-
     res.send(user);
   } catch (error) {
     handleHttP(res, `${error}`);
@@ -58,4 +63,26 @@ const unblockUser = async ({ params }: RequestExt, res: Response) => {
   }
 };
 
-export { registerUser, loginUser, getProfile, blockUser, unblockUser };
+const refreshToken = async (req: RequestExt, res: Response) => {
+  try {
+    const { refreshToken } = req.cookies;
+    
+    if (!refreshToken) throw new Error("No refresh token in cookie");
+    const user = await findUserByRefreshTokenService(refreshToken);
+    
+    const accessToken = await verifyRefreshToken(refreshToken,`${user._id}`)
+
+    res.json({"token":accessToken})
+  } catch (error) {
+    handleHttP(res, `${error}`);
+  }
+};
+
+export {
+  registerUser,
+  loginUser,
+  getProfile,
+  blockUser,
+  unblockUser,
+  refreshToken,
+};

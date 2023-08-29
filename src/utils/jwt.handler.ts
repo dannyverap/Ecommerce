@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "";
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "";
 
 const generateToken = (id: string) => {
-  const jwt = sign({ id }, JWT_SECRET, { expiresIn: "2h" });
+  const jwt = sign({ id }, JWT_SECRET, { expiresIn: "20s" });
   return jwt;
 };
 
@@ -19,4 +19,13 @@ const verifyToken = (jwt: string) => {
   return validToken;
 };
 
-export { generateToken, generateRefreshToken, verifyToken };
+const verifyRefreshToken = (refreshToken: string, id: string) => {
+  const tokenDecoded = verify(refreshToken, JWT_REFRESH_SECRET) as payload;
+  if (tokenDecoded.id !== id)
+    throw new Error("There is something wrong with the refresh token");
+
+  const accessToken = generateToken(id);
+  return accessToken;
+};
+
+export { generateToken, generateRefreshToken, verifyToken, verifyRefreshToken };
