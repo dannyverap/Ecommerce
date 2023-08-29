@@ -7,6 +7,7 @@ export interface User extends Auth {
   mobile: String;
   role: String;
   isBlocked: boolean;
+  refreshToken: String;
   cart: String[];
   address: ObjectId[];
   wishlist: ObjectId[];

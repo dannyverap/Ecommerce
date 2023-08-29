@@ -14,7 +14,7 @@ const getUserByIdService = async (id: string) => {
   return user;
 };
 
-const updateUserService = async (id: string, data: User) => {
+const updateUserService = async (id: string, data: Partial<User>) => {
   const userToUpdate = await UserModel.findOneAndUpdate({ _id: id }, data, {
     new: true,
   });

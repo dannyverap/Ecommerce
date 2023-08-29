@@ -2,8 +2,9 @@ import UserModel from "../models/user";
 import { User } from "../interfaces/user.interface";
 import { Auth } from "../interfaces/auth.interface";
 import { verify, encrypt } from "../utils/bcrypt.handler";
-import { generateToken } from "../utils/jwt.handler";
+import { generateRefreshToken, generateToken } from "../utils/jwt.handler";
 import { isBlock } from "typescript";
+import { updateUserService } from "./user";
 
 const registerNewUserService = async ({
   email,
@@ -40,9 +41,12 @@ const loginUserService = async ({ email, password }: Auth) => {
   if (!matchedPassword) throw new Error("Wrong user or password");
 
   const token = generateToken(`${userInDB._id}`);
+  const refreshToken = generateRefreshToken(`${userInDB._id}`)
+  const updateRefreshTokenInUser = updateUserService(`${userInDB._id}`, {refreshToken:`${refreshToken}`}) 
 
   const data = {
     token,
+    refreshToken,
     userInDB,
   };
 
