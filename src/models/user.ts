@@ -39,6 +39,7 @@ const UserSchema = new Schema<User>(
       index:true,
     },
     cart: {
+      default:[],
     },
 
     address: [
