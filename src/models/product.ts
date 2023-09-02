@@ -1,7 +1,7 @@
 import mongoose, { model, Model, Schema, Types } from "mongoose";
 import { Product } from "../interfaces/product.interface";
 
-const productSchema = new Schema<Product>(
+const ProductSchema = new Schema<Product>(
   {
     title: {
       type: String,
@@ -56,3 +56,6 @@ const productSchema = new Schema<Product>(
     versionKey: false,
   }
 );
+
+const ProductModel = model("products", ProductSchema);
+export default ProductModel;
