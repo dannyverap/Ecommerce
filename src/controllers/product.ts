@@ -9,10 +9,14 @@ import {
 import { handleHttP } from "../utils/error.handler";
 import { RequestExt } from "../interfaces/request.interface";
 import { validateMongoId } from "../utils/validateMongoId";
+import { Product } from "../interfaces/product.interface";
 
+var slugify = require("slugify");
 
 const registerProduct = async ({ body }: Request, res: Response) => {
   try {
+    if (body.title) body.slug = slugify = body.title;
+
     const newProduct = await registerNewProductService(body);
     res.send(newProduct);
   } catch (error) {
@@ -22,8 +26,12 @@ const registerProduct = async ({ body }: Request, res: Response) => {
 
 const getAllProducts = async (req: RequestExt, res: Response) => {
   try {
-    const allProducts = await getAllProductsService();
-    res.send(allProducts );
+    
+    const queryData = req.query 
+    console.log(queryData);
+    
+    const allProducts = await getAllProductsService(queryData);
+    res.send(allProducts);
   } catch (error) {
     handleHttP(res, `${error}`);
   }
@@ -32,7 +40,7 @@ const getAllProducts = async (req: RequestExt, res: Response) => {
 const getProductById = async ({ params }: RequestExt, res: Response) => {
   try {
     const { id } = params;
-    validateMongoId(id)
+    validateMongoId(id);
     const product = await getProductByIdService(id);
     res.send(product);
   } catch (error) {
@@ -43,6 +51,9 @@ const getProductById = async ({ params }: RequestExt, res: Response) => {
 const updateProduct = async ({ params, body }: Request, res: Response) => {
   try {
     const { id } = params;
+    if (body.slug)  throw new Error("You can't modify the slug directly")
+    if (body.title) body.slug = slugify = body.title;
+    
     const updatedProduct = await updateProductService(id, body);
     res.send(updatedProduct);
   } catch (error) {
@@ -60,5 +71,10 @@ const deleteProduct = async ({ params }: Request, res: Response) => {
   }
 };
 
-
-export { registerProduct, getAllProducts, getProductById, updateProduct, deleteProduct};
+export {
+  registerProduct,
+  getAllProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+};

@@ -10,7 +10,6 @@ const ProductSchema = new Schema<Product>(
     },
     slug: {
       type: String,
-      required: true,
       unique: true,
       lowercase: true,
     },
@@ -35,10 +34,12 @@ const ProductSchema = new Schema<Product>(
     quantity: {
       type: Number,
       required: true,
+      // select: false,
     },
     sold: {
       type: Number,
       default: 0,
+      // select:false,
     },
     images: {
       type: [String],

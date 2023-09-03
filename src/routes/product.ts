@@ -11,9 +11,9 @@ import { roleMiddleware } from "../middleware/role";
 
 const router = Router();
 
-router.post("/",registerProduct)
+router.post("/",authMiddleware, registerProduct)
 
-router.get("/", getAllProducts);
+router.get("/", authMiddleware, roleMiddleware, getAllProducts);
 
 router.get("/:id", getProductById);
 

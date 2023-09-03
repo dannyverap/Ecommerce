@@ -6,8 +6,8 @@ const registerNewProductService = async (Body: Product) => {
   return newProduct;
 };
 
-const getAllProductsService = async () => {
-  const allProducts = await ProductModel.find();
+const getAllProductsService = async (queryData: Partial<Product>) => {
+  const allProducts = await ProductModel.find(queryData);
   return allProducts;
 };
 
