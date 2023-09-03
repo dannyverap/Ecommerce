@@ -1,6 +1,7 @@
 import mongoose, { ObjectId } from "mongoose";
 
 export interface Product {
+    select(fields: any): Product;
     title: String,
     slug: String,
     description: String,
