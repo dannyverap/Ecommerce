@@ -10,14 +10,13 @@ import { handleHttP } from "../utils/error.handler";
 import { RequestExt } from "../interfaces/request.interface";
 import { validateMongoId } from "../utils/validateMongoId";
 import { Product } from "../interfaces/product.interface";
-import { queryHandler, sortHandler } from "../utils/query.handler";
+import { queryHandler } from "../utils/query.handler";
 
 var slugify = require("slugify");
 
 const registerProduct = async ({ body }: Request, res: Response) => {
   try {
-    if (body.title) body.slug = slugify = body.title;
-
+    if (body.title) body.slug = slugify(body.title);
     const newProduct = await registerNewProductService(body);
     res.send(newProduct);
   } catch (error) {
@@ -28,11 +27,8 @@ const registerProduct = async ({ body }: Request, res: Response) => {
 const getAllProducts = async (req: RequestExt, res: Response) => {
   try {
     const queryObj = { ...req.query };
-
     const query = queryHandler(queryObj);
-
     let allProducts = await getAllProductsService(query);
-
     res.send(allProducts);
   } catch (error) {
     handleHttP(res, `${error}`);
@@ -55,7 +51,6 @@ const updateProduct = async ({ params, body }: Request, res: Response) => {
     const { id } = params;
     if (body.slug) throw new Error("You can't modify the slug directly");
     if (body.title) body.slug = slugify = body.title;
-
     const updatedProduct = await updateProductService(id, body);
     res.send(updatedProduct);
   } catch (error) {

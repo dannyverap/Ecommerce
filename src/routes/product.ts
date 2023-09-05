@@ -13,7 +13,7 @@ const router = Router();
 
 router.post("/",authMiddleware, registerProduct)
 
-router.get("/", authMiddleware, roleMiddleware, getAllProducts);
+router.get("/",  getAllProducts);
 
 router.get("/:id", getProductById);
 
